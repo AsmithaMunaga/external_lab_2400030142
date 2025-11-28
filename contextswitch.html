@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>College Portal Theme Switcher</title>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const {createContext, useContext, useState} = React
+
+const ThemeContext = createContext()
+
+function ThemeProvider({children}) {
+  const [theme, setTheme] = useState('light')
+  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light')
+  return (
+    <ThemeContext.Provider value={{theme, toggle}}>
+      {children}
+    </ThemeContext.Provider>
+  )
+}
+
+function ThemeButton() {
+  const {theme, toggle} = useContext(ThemeContext)
+  const style = {
+    padding: '8px 12px',
+    border: '1px solid',
+    cursor: 'pointer',
+    background: theme === 'light' ? '#ffffff' : '#222222',
+    color: theme === 'light' ? '#000000' : '#ffffff'
+  }
+  return (
+    <button style={style} onClick={toggle}>
+      Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
+    </button>
+  )
+}
+
+function Header() {
+  const style = {
+    padding: '16px 24px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
+  return (
+    <header style={style}>
+      <h1>College Portal</h1>
+      <ThemeButton />
+    </header>
+  )
+}
+
+function Dashboard() {
+  const container = {padding: '24px'}
+  const card = {padding: '12px', margin: '8px 0'}
+  return (
+    <main style={container}>
+      <section style={card}>
+        <h2>Announcements</h2>
+        <p>No new announcements</p>
+      </section>
+
+      <section style={card}>
+        <h2>Courses</h2>
+        <ul>
+          <li>Database Systems</li>
+          <li>Operating Systems</li>
+        </ul>
+      </section>
+    </main>
+  )
+}
+
+function App() {
+  const {theme} = useContext(ThemeContext)
+  const appStyle = {
+    fontFamily: 'Arial, sans-serif',
+    minHeight: '100vh',
+    margin: 0,
+    padding: 0,
+    background: theme === 'light' ? '#f5f5f5' : '#121212',
+    color: theme === 'light' ? '#000000' : '#ffffff'
+  }
+  return (
+    <div style={appStyle}>
+      <Header />
+      <Dashboard />
+    </div>
+  )
+}
+
+ReactDOM.createRoot(document.getElementById('root'))
+  .render(
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  )
+</script>
+</body>
+</html>
